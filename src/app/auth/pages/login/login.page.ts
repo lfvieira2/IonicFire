@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 
 import { AuthService } from 'src/app/core/services/auth.service';
 import { AuthProvider } from 'src/app/core/services/auth.types';
+import { OverlayService } from 'src/app/core/services/overlay.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ import { AuthProvider } from 'src/app/core/services/auth.types';
 })
 export class LoginPage implements OnInit {
   authForm: FormGroup;
-  authProviders: AuthProvider;
+  authProviders = AuthProvider;
 
   configs = {
     isSignIn: true,
@@ -20,7 +21,11 @@ export class LoginPage implements OnInit {
   };
   private nameControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private overlayService: OverlayService
+  ) {}
 
   ngOnInit(): void {
     this.createForm();
@@ -36,9 +41,11 @@ export class LoginPage implements OnInit {
   get name(): FormControl {
     return <FormControl>this.authForm.get('name');
   }
+
   get email(): FormControl {
     return <FormControl>this.authForm.get('email');
   }
+
   get password(): FormControl {
     return <FormControl>this.authForm.get('password');
   }
@@ -54,6 +61,8 @@ export class LoginPage implements OnInit {
   }
 
   async onSubmit(provider: AuthProvider): Promise<void> {
+    // o await é usando para quando recerber uma promise para transformar para um element ionic
+    const loading = await this.overlayService.loading();
     try {
       const credentials = await this.authService.authenticate({
         isSignIn: this.configs.isSignIn,
@@ -64,6 +73,11 @@ export class LoginPage implements OnInit {
       console.log('Redirecting ...');
     } catch (e) {
       console.log('Auth error: ', e);
+      await this.overlayService.toast({
+        message: e.message
+      });
+    } finally {
+      loading.dismiss();
     }
   }
 }
