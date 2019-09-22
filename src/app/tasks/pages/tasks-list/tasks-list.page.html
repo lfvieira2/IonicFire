@@ -1,22 +1,15 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Tasks List</ion-title>
+    <ion-title>Create List</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-list *ngIf="tasks$ | async as tasks">
-    <ng-container *ngIf="tasks.length > 0; else noTasks">
-      <app-task-item *ngFor="let task of tasks" [task]="task"></app-task-item>
-    </ng-container>
-    <ng-template #noTasks>
-      <ion-item lines="none">No Task yet...</ion-item>
-    </ng-template>
-  </ion-list>
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <ion-item>
+    <ion-icon name="paper" slot="start" color="primary"></ion-icon>
+    <ion-input type="text" placeholder="Title" autofocus="true" inputmode="text"></ion-input>
+  </ion-item>
+  <ion-button expand="full" type="submit">
+    save
+  </ion-button>
 </ion-content>
