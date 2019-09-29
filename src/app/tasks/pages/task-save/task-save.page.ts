@@ -37,7 +37,6 @@ export class TaskSavePage implements OnInit {
       return;
     }
     this.taskId = taskId;
-    console.log('taskId: ', taskId);
     this.pageTitle = 'Edit Task';
     this.tasksService
       .get(taskId)
@@ -66,8 +65,6 @@ export class TaskSavePage implements OnInit {
             id: this.taskId,
             ...this.taskForm.value
           });
-
-      console.log('Task saved ', task);
       this.navCtrl.navigateBack('/tasks');
     } catch (error) {
       console.log('Error save Task:', error);
