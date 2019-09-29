@@ -6,6 +6,7 @@ import { OverlayService } from 'src/app/core/services/overlay.service';
 import { Task } from '../../models/task.model';
 import { TasksService } from '../../services/tasks.service';
 import { async } from 'q';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tasks-list',
@@ -21,8 +22,10 @@ export class TasksListPage {
     private tasksService: TasksService
   ) {}
 
-  ionViewDidEnter(): void {
+  async ionViewDidEnter(): Promise<void> {
+    const loading = await this.overlayService.loading();
     this.tasks$ = this.tasksService.getAll();
+    this.tasks$.pipe(take(1)).subscribe(tasks => loading.dismiss());
   }
 
   onUpdate(task: Task): void {
@@ -44,6 +47,14 @@ export class TasksListPage {
         },
         'No'
       ]
+    });
+  }
+
+  async onDone(task: Task): Promise<void> {
+    const taskToUpdate = { ...task, done: !task.done };
+    await this.tasksService.update(taskToUpdate);
+    await this.overlayService.toast({
+      message: `Task "${task.title}" ${taskToUpdate.done ? 'Completed' : 'Update'}!`
     });
   }
 }
