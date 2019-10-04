@@ -9,7 +9,7 @@ import { OverlayService } from 'src/app/core/services/overlay.service';
   template: `
     <ion-buttons>
       <ion-button (click)="logout()">
-        <ion-icon name="exist" slot="icon-only"></ion-icon>
+        <ion-icon name="exit" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   `
